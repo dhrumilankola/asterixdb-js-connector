@@ -1,5 +1,3 @@
-// File: /src/core/Connector.js
-
 const axios = require('axios');
 
 /**
@@ -85,60 +83,86 @@ class Connector {
     }
   }
 
-  /**
-   * Executes a SQL++ query in asynchronous mode.
-   *
-   * This method sends the query using a POST request to `/query/service`.
-   * Then, it periodically polls `/query/service/status` to check if the query has completed.
-   * Once complete, it retrieves the final results from `/query/service/result`.
-   *
-   * @param {string} query - The SQL++ query string.
-   * @param {number} pollInterval - The interval (in milliseconds) to poll the status endpoint.
-   * @returns {Promise<any>} The JSON response data from AsterixDB.
-   * @throws {Error} If the asynchronous query fails or times out.
-   */
-  async executeQueryAsync(query, pollInterval = 1000) {
+
+/**
+ * Executes a SQL++ query in asynchronous mode.
+ *
+ * This method sends the query using a POST request to `/query/service` with mode "async"
+ * and additional parameters. It expects an initial response with status "running" and a "handle"
+ * which is a URL. It then polls that URL until the query is complete. When the status returns
+ * "success" with a new handle, it uses that handle as the URL to fetch the final result.
+ *
+ * @param {string} query - The SQL++ query string.
+ * @param {number} pollInterval - The interval (in milliseconds) between status polls.
+ * @param {number} maxAttempts - Maximum number of polling attempts.
+ * @returns {Promise<any>} The final query result.
+ * @throws {Error} If the asynchronous query fails or times out.
+ */
+async executeQueryAsync(query, pollInterval = 1000, maxAttempts = 10) {
     try {
-      // Submit the query via POST.
-      const submitResponse = await this.httpClient.post('/query/service', { statement: query });
-      const requestID = submitResponse.data.requestID;
-      if (!requestID) {
-        throw new Error('No requestID received for asynchronous query.');
+      // Prepare payload
+      const payload = {
+        statement: query.trim(),
+        mode: "async",
+        pretty: false
+      };
+      console.debug("Submitting async query with payload:", JSON.stringify(payload, null, 2));
+  
+      // Submit query in async mode.
+      const submitResponse = await this.httpClient.post('/query/service', payload);
+      console.debug("Async submit response status:", submitResponse.status);
+      console.debug("Async submit response data:", submitResponse.data);
+      const initialResponse = submitResponse.data;
+  
+      // Verify the initial async response.
+      if (initialResponse.status !== "running" || !initialResponse.handle) {
+        console.error("Unexpected async response:", initialResponse);
+        throw new Error("Invalid async query response: " + JSON.stringify(initialResponse));
       }
-
-      // Poll the status endpoint until the query is complete.
+      const statusUrl = initialResponse.handle;
+      console.debug("Received initial async handle (status URL):", statusUrl);
+  
+      let attempts = 0;
       let statusResponse;
-      while (true) {
-        // Wait for the specified poll interval.
+      while (attempts < maxAttempts) {
         await new Promise(resolve => setTimeout(resolve, pollInterval));
-
-        statusResponse = await this.httpClient.get('/query/service/status', {
-          params: { requestID }
-        });
+        console.debug(`Polling async status (attempt ${attempts + 1}/${maxAttempts}) at URL: ${statusUrl}...`);
+  
+        // Use the handle URL directly.
+        statusResponse = await this.httpClient.get(statusUrl);
+        console.debug("Status response status code:", statusResponse.status);
+        console.debug("Status response data:", statusResponse.data);
         const statusData = statusResponse.data;
-
-        // Assuming the status data contains a 'status' field.
-        if (statusData.status && statusData.status.toLowerCase() === 'success') {
-          break;
-        } else if (statusData.status && statusData.status.toLowerCase() === 'fatal') {
-          throw new Error(`Asynchronous query failed: ${JSON.stringify(statusData)}`);
+  
+        // If status indicates success and provides a new handle, use it for results.
+        if (statusData.status && statusData.status.toLowerCase() === "success" && statusData.handle) {
+          console.debug("Async query successful; new result handle received:", statusData.handle);
+          // Use the new handle URL directly.
+          const resultResponse = await this.httpClient.get(statusData.handle);
+          console.debug("Result response data:", resultResponse.data);
+          return resultResponse.data;
+        } else if (statusData.status && 
+                   (statusData.status.toLowerCase() === "failed" || statusData.status.toLowerCase() === "fatal")) {
+          console.error("Async query failed with status:", statusData.status, "and data:", statusData);
+          throw new Error("Asynchronous query failed: " + JSON.stringify(statusData));
         }
-        // Continue polling until success.
+        attempts++;
       }
-
-      // Once successful, fetch the result.
-      const resultResponse = await this.httpClient.get('/query/service/result', {
-        params: { requestID }
-      });
-      return resultResponse.data;
+      throw new Error("Asynchronous query did not complete within the expected time.");
     } catch (error) {
+      if (error.response) {
+        console.error("Error response status:", error.response.status);
+        console.error("Error response data:", error.response.data);
+      }
       const errorMsg = error.response && error.response.data
         ? JSON.stringify(error.response.data)
         : error.message;
       throw new Error(`Asynchronous query execution failed: ${errorMsg}`);
     }
   }
-
+  
+  
+  
   /**
    * Performs a generic POST request.
    *
