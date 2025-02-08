@@ -20,7 +20,7 @@ async function executeDirectQuery() {
 // Option 2: Building a SQL++ query programmatically using QueryBuilder.
 async function executeBuiltQuery() {
     const connector = new Connector();
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       .select(['*'])
       .from('ChirpUsers')

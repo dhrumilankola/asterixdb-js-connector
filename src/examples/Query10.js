@@ -11,7 +11,7 @@ async function executeQuery10() {
     const connector = new Connector();
     
     // We incorporate the computed alias for count using a standard GROUP BY approach.
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       .select('uid AS user, COUNT(cm) AS count')
       .from('ChirpMessages cm')

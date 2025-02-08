@@ -8,10 +8,10 @@ async function executeQuery7() {
     const QueryBuilder = require('../core/QueryBuilder');
     const connector = new Connector();
     
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       .select('VALUE gbu')
-      .from('GleambookUsers gbu')
+      .from('GleambookUsers')
       .where('(EVERY e IN gbu.employment SATISFIES e.endDate IS NOT UNKNOWN)')
       .build();
     

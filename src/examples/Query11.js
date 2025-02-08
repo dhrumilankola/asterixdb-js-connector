@@ -14,9 +14,9 @@ async function executeQuery11() {
     const connector = new Connector();
     
     // Build the nested subquery.
-    let subquery = new QueryBuilder()
+    let subquery = await new QueryBuilder()
       .select('VALUE cm2.chirpId')
-      .from('ChirpMessages cm2')
+      .from('ChirpMessages')
       .where('cm2.referredTopics ~= cm1.referredTopics AND cm2.chirpId > cm1.chirpId')
       .build();
     // Remove trailing semicolon.
@@ -25,12 +25,12 @@ async function executeQuery11() {
     }
     
     // Build the main query.
-    const mainQuery = new QueryBuilder()
+    const mainQuery = await new QueryBuilder()
       .set('simfunction', 'jaccard')
       .set('simthreshold', '0.3')
       .use('TinySocial')
       .select(`cm1 AS chirp, (${subquery}) AS similarChirps`)
-      .from('ChirpMessages cm1')
+      .from('ChirpMessages')
       .build();
     
     try {

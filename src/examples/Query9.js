@@ -8,7 +8,7 @@ const QueryBuilder = require('../core/QueryBuilder');
 // GROUP BY cm.user.screenName AS uid;
 async function executeQuery9A() {
     const connector = new Connector();
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       .select('uid AS user, COUNT(cm) AS count')
       .from('ChirpMessages cm')
@@ -34,10 +34,10 @@ async function executeQuery9B() {
     const connector = new Connector();
     // Since our builder does not have a dedicated hint method for grouped aggregation,
     // we inject the hint manually into the query string.
-    const baseQuery = new QueryBuilder()
+    const baseQuery = await new QueryBuilder()
       .use('TinySocial')
       .select('uid AS user, COUNT(cm) AS count')
-      .from('ChirpMessages cm')
+      .from('ChirpMessages')
       .groupBy('cm.user.screenName AS uid')
       .build();
     // Inject the hash hint after the FROM clause.

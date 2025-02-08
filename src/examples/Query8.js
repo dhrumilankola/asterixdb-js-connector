@@ -6,10 +6,10 @@ async function executeQuery8() {
     const QueryBuilder = require('../core/QueryBuilder');
     const connector = new Connector();
     
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       .select('COUNT(gbu) AS numUsers')
-      .from('GleambookUsers gbu')
+      .from('GleambookUsers')
       .build();
     
     try {
