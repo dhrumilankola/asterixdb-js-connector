@@ -10,7 +10,7 @@ async function executeQuery3() {
     const QueryBuilder = require('../core/QueryBuilder');
     const connector = new Connector();
   
-    const mainQuery = new QueryBuilder()
+    const mainQuery = await new QueryBuilder()
       .use('TinySocial')
       .select("user.name AS uname")
       .selectSubQuery("messages", qb =>
