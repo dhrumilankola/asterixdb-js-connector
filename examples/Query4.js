@@ -7,11 +7,11 @@
 //           AND cm2.chirpId < cm1.chirpId) AS nearbyMessages
 // FROM ChirpMessages cm1;
 async function executeQuery4() {
-    const Connector = require('../core/Connector');
-    const QueryBuilder = require('../core/QueryBuilder');
+    const Connector = require('../src/core/Connector');
+    const QueryBuilder = require('../src/core/QueryBuilder');
     const connector = new Connector();
   
-    const mainQuery = new QueryBuilder()
+    const mainQueryString = await new QueryBuilder()
       .use('TinySocial')
       .select("cm1.messageText AS message")
       .selectSubQuery("nearbyMessages", qb =>
@@ -22,11 +22,13 @@ async function executeQuery4() {
       .build();
   
     try {
-      const result = await connector.executeQuery(mainQuery);
-      console.log('Query 4 (Theta Join) Result:');
-      console.dir(result, { depth: null, colors: true });
+      const result = await connector.executeQuery(mainQueryString);
+      // console.log('Query 4 (Theta Join) Result:');
+      // console.dir(result, { depth: null, colors: true });
+      console.log('Query 4 (Theta Join) executed. Result length:', result.length);
     } catch (error) {
       console.error('Query 4 Error:', error.message);
+      if (error.stack) console.error(error.stack);
     }
   }
   

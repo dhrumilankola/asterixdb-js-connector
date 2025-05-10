@@ -1,5 +1,5 @@
-const Connector = require('../core/Connector')
-const QueryBuilder = require('../core/QueryBuilder');
+const Connector = require('../src/core/Connector')
+const QueryBuilder = require('../src/core/QueryBuilder');
 
 // Query 1 - Other Query Filters
 // USE TinySocial;
@@ -9,7 +9,7 @@ const QueryBuilder = require('../core/QueryBuilder');
 //   AND user.userSince <= datetime('2012-07-29T23:59:59');
 async function executeQuery1() {
     const connector = new Connector();
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       .select(['VALUE user'])
       .from('GleambookUsers user')

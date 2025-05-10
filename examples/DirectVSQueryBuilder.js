@@ -1,7 +1,7 @@
 // File: /src/index.js
 
-const Connector = require('../core/Connector');
-const QueryBuilder = require('../core/QueryBuilder');
+const Connector = require('../src/core/Connector');
+const QueryBuilder = require('../src/core/QueryBuilder');
 
 // Option 1: Direct execution of a SQL++ query provided by the developer.
 async function executeDirectQuery() {
@@ -20,7 +20,7 @@ async function executeDirectQuery() {
 // Option 2: Building a SQL++ query programmatically using QueryBuilder.
 async function executeBuiltQuery() {
     const connector = new Connector();
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       .select(['*'])
       .from('ChirpUsers')

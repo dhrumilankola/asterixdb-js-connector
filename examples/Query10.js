@@ -6,12 +6,12 @@
 // ORDER BY c DESC
 // LIMIT 3;
 async function executeQuery10() {
-    const Connector = require('../core/Connector');
-    const QueryBuilder = require('../core/QueryBuilder');
+    const Connector = require('../src/core/Connector');
+    const QueryBuilder = require('../src/core/QueryBuilder');
     const connector = new Connector();
     
     // We incorporate the computed alias for count using a standard GROUP BY approach.
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       .select('uid AS user, COUNT(cm) AS count')
       .from('ChirpMessages cm')

@@ -1,5 +1,5 @@
-const Connector = require('../core/Connector')
-const QueryBuilder = require('../core/QueryBuilder');
+const Connector = require('../src/core/Connector')
+const QueryBuilder = require('../src/core/QueryBuilder');
 
 // Query 2-A - Equijoin
 // USE TinySocial;
@@ -8,7 +8,7 @@ const QueryBuilder = require('../core/QueryBuilder');
 // WHERE msg.authorId = user.id;
 async function executeQuery2A() {
     const connector = new Connector();
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       // We can specify the entire SELECT clause as a single string.
       .select(['user.name AS uname, msg.message AS message'])
@@ -33,7 +33,7 @@ async function executeQuery2A() {
   // WHERE msg.authorId /*+ indexnl */ = user.id;
   async function executeQuery2B() {
     const connector = new Connector();
-    const query = new QueryBuilder()
+    const query = await new QueryBuilder()
       .use('TinySocial')
       .select(['user.name AS uname, msg.message AS message'])
       .from('GleambookUsers user, GleambookMessages msg')
