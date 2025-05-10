@@ -1,21 +1,24 @@
-const Connector = require('../core/Connector');
-const QueryBuilder = require('../core/QueryBuilder');
+const Connector = require('../src/core/Connector');
+const QueryBuilder = require('../src/core/QueryBuilder');
 
 // Executing an asynchronous query.
 async function executeAsyncQuery() {
   const connector = new Connector();
-  const query = new QueryBuilder()
+  const queryString = await new QueryBuilder()
     .use('TinySocial')
     .select(['*'])
     .from('ChirpUsers')
     .build();
 
   try {
-    const result = await connector.executeQueryAsync(query);
+    const result = await connector.executeQueryAsync(queryString);
     console.log('Asynchronous Query Result:');
     console.dir(result, { depth: null, colors: true });
   } catch (error) {
     console.error('Asynchronous Query Error:', error.message);
+    if (error.response && error.response.data && error.response.data.errors) {
+        console.error("Details:", JSON.stringify(error.response.data.errors, null, 2));
+    }
   }
 }
 
@@ -46,6 +49,9 @@ async function executeAsyncQueryTest2() {
       console.dir(result, { depth: null, colors: true });
     } catch (error) {
       console.error("Test 2: Async query error:", error.message);
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.error("Details:", JSON.stringify(error.response.data.errors, null, 2));
+      }
     }
   }
     

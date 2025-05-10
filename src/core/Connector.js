@@ -2,14 +2,6 @@ const axios = require('axios');
 
 /**
  * Connector class to handle HTTP communication with AsterixDB.
- *
- * According to the AsterixDB HTTP API documentation:
- * 1. All queries (both read-only and data modification) are sent to the `/query/service` endpoint.
- *    - SELECT queries in synchronous mode are sent using a GET request.
- *    - DML queries (INSERT/UPDATE/DELETE) in synchronous mode are sent using a POST request.
- * 2. Asynchronous queries use additional endpoints:
- *    - `/query/service/status` to check the status of a submitted query.
- *    - `/query/service/result` to fetch the final results.
  */
 class Connector {
   /**

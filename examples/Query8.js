@@ -2,8 +2,8 @@
 // USE TinySocial;
 // SELECT COUNT(gbu) AS numUsers FROM GleambookUsers gbu;
 async function executeQuery8() {
-    const Connector = require('../core/Connector');
-    const QueryBuilder = require('../core/QueryBuilder');
+    const Connector = require('../src/core/Connector');
+    const QueryBuilder = require('../src/core/QueryBuilder');
     const connector = new Connector();
     
     const query = await new QueryBuilder()

@@ -1,5 +1,5 @@
-const Connector = require('../core/Connector');
-const QueryBuilder = require('../core/QueryBuilder');
+const Connector = require('../src/core/Connector');
+const QueryBuilder = require('../src/core/QueryBuilder');
 
 // Query 0-A - Exact-Match Lookup
 async function executeQuery0A() {

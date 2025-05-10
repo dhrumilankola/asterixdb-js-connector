@@ -8,11 +8,11 @@
 //         WHERE cm.user.name ~= gbu.name) AS similarUsers
 // FROM GleambookUsers gbu;
 async function executeQuery5() {
-    const Connector = require('../core/Connector');
-    const QueryBuilder = require('../core/QueryBuilder');
+    const Connector = require('../src/core/Connector');
+    const QueryBuilder = require('../src/core/QueryBuilder');
     const connector = new Connector();
   
-    const mainQuery = new QueryBuilder()
+    const mainQueryString = await new QueryBuilder()
       .set('simfunction', 'edit-distance')
       .set('simthreshold', '3')
       .use('TinySocial')
@@ -25,11 +25,13 @@ async function executeQuery5() {
       .build();
   
     try {
-      const result = await connector.executeQuery(mainQuery);
-      console.log('Query 5 (Fuzzy Join) Result:');
-      console.dir(result, { depth: null, colors: true });
+      const result = await connector.executeQuery(mainQueryString);
+      // console.log('Query 5 (Fuzzy Join) Result:');
+      // console.dir(result, { depth: null, colors: true });
+      console.log('Query 5 (Fuzzy Join) executed. Result length:', result.length);
     } catch (error) {
       console.error('Query 5 Error:', error.message);
+      if (error.stack) console.error(error.stack);
     }
   }
   
