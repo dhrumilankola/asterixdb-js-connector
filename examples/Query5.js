@@ -27,8 +27,7 @@ async function executeQuery5() {
     try {
       const result = await connector.executeQuery(mainQueryString);
       // console.log('Query 5 (Fuzzy Join) Result:');
-      // console.dir(result, { depth: null, colors: true });
-      console.log('Query 5 (Fuzzy Join) executed. Result length:', result.length);
+      console.dir(result, { depth: null, colors: true });
     } catch (error) {
       console.error('Query 5 Error:', error.message);
       if (error.stack) console.error(error.stack);

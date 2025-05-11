@@ -1,10 +1,10 @@
 const Connector = require('./core/Connector');
 const QueryBuilder = require('./core/QueryBuilder');
-const OfflineEnabledConnector = require('./core/OfflineEnabledConnector');
-const LocalStorageAdapter = require('./core/LocalStorageAdapter');
-const SyncManager = require('./core/SyncManager');
-const AsterixCollection = require('./core/AsterixCollection');
-const AsterixDatabase = require('./core/AsterixDatabase');
+const OfflineEnabledConnector = require('./offline/OfflineEnabledConnector');
+const LocalStorageAdapter = require('./offline/LocalStorageAdapter');
+const SyncManager = require('./offline/SyncManager');
+const AsterixCollection = require('./mongo/AsterixCollection');
+const AsterixDatabase = require('./mongo/AsterixDatabase');
 const AsterixClient = require('./core/AsterixClient');
 
 // Export all components

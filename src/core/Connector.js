@@ -98,44 +98,44 @@ async executeQueryAsync(query, pollInterval = 1000, maxAttempts = 10) {
         mode: "async",
         pretty: false
       };
-      console.debug("Submitting async query with payload:", JSON.stringify(payload, null, 2));
+      // console.debug("Submitting async query with payload:", JSON.stringify(payload, null, 2));
   
       // Submit query in async mode.
       const submitResponse = await this.httpClient.post('/query/service', payload);
-      console.debug("Async submit response status:", submitResponse.status);
-      console.debug("Async submit response data:", submitResponse.data);
+      // console.debug("Async submit response status:", submitResponse.status);
+      // console.debug("Async submit response data:", submitResponse.data);
       const initialResponse = submitResponse.data;
   
       // Verify the initial async response.
       if (initialResponse.status !== "running" || !initialResponse.handle) {
-        console.error("Unexpected async response:", initialResponse);
+        // console.error("Unexpected async response:", initialResponse);
         throw new Error("Invalid async query response: " + JSON.stringify(initialResponse));
       }
       const statusUrl = initialResponse.handle;
-      console.debug("Received initial async handle (status URL):", statusUrl);
+      // console.debug("Received initial async handle (status URL):", statusUrl);
   
       let attempts = 0;
       let statusResponse;
       while (attempts < maxAttempts) {
         await new Promise(resolve => setTimeout(resolve, pollInterval));
-        console.debug(`Polling async status (attempt ${attempts + 1}/${maxAttempts}) at URL: ${statusUrl}...`);
+        // console.debug(`Polling async status (attempt ${attempts + 1}/${maxAttempts}) at URL: ${statusUrl}...`);
   
         // Use the handle URL directly.
         statusResponse = await this.httpClient.get(statusUrl);
-        console.debug("Status response status code:", statusResponse.status);
-        console.debug("Status response data:", statusResponse.data);
+        // console.debug("Status response status code:", statusResponse.status);
+        // console.debug("Status response data:", statusResponse.data);
         const statusData = statusResponse.data;
   
         // If status indicates success and provides a new handle, use it for results.
         if (statusData.status && statusData.status.toLowerCase() === "success" && statusData.handle) {
-          console.debug("Async query successful; new result handle received:", statusData.handle);
+          // console.debug("Async query successful; new result handle received:", statusData.handle);
           // Use the new handle URL directly.
           const resultResponse = await this.httpClient.get(statusData.handle);
-          console.debug("Result response data:", resultResponse.data);
+          // console.debug("Result response data:", resultResponse.data);
           return resultResponse.data;
         } else if (statusData.status && 
                    (statusData.status.toLowerCase() === "failed" || statusData.status.toLowerCase() === "fatal")) {
-          console.error("Async query failed with status:", statusData.status, "and data:", statusData);
+          // console.error("Async query failed with status:", statusData.status, "and data:", statusData);
           throw new Error("Asynchronous query failed: " + JSON.stringify(statusData));
         }
         attempts++;
@@ -143,8 +143,8 @@ async executeQueryAsync(query, pollInterval = 1000, maxAttempts = 10) {
       throw new Error("Asynchronous query did not complete within the expected time.");
     } catch (error) {
       if (error.response) {
-        console.error("Error response status:", error.response.status);
-        console.error("Error response data:", error.response.data);
+        // console.error("Error response status:", error.response.status);
+        // console.error("Error response data:", error.response.data);
       }
       const errorMsg = error.response && error.response.data
         ? JSON.stringify(error.response.data)

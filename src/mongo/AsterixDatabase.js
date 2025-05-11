@@ -24,11 +24,8 @@ class AsterixDatabase {
    */
   collection(name) {
     if (!this._collections[name]) {
-      console.log(`[AsterixDatabase.collection] Creating new AsterixCollection instance for '${name}' in dataverse '${this.name}'.`);
       this._collections[name] = new AsterixCollection(name, this, this._connector);
-      console.log(`[AsterixDatabase.collection] After new AsterixCollection, typeof insertOne: ${typeof this._collections[name].insertOne}`);
     }
-    console.log(`[AsterixDatabase.collection] Returning AsterixCollection instance for '${name}'. typeof insertOne: ${typeof this._collections[name].insertOne}. Instance props:`, Object.keys(this._collections[name]));
     return this._collections[name];
   }
   

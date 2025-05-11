@@ -19,8 +19,8 @@ async function executeQuery6() {
     try {
       const result = await connector.executeQuery(query);
       // console.log('Query 6 (Existential Quantification) Result:');
-      // console.dir(result, { depth: null, colors: true });
-      console.log('Query 6 (Existential Quantification) executed. Result length:', result.length);
+      console.dir(result, { depth: null, colors: true });
+      // console.log('Query 6 (Existential Quantification) executed. Result length:', result && result.results ? result.results.length : 'N/A (no results array)');
     } catch (error) {
       console.error('Query 6 Error:', error.message);
       if (error.stack) console.error(error.stack);

@@ -9,27 +9,21 @@ if (typeof window === 'undefined') {
   try {
     const nodeJsMemoryDriverModule = require('localforage-driver-memory');
     if (nodeJsMemoryDriverModule) {
-      console.log('[LocalStorageAdapter] Node.js: Loaded localforage-driver-memory. Defining...');
       localforageDriverPromise = localforage.defineDriver(nodeJsMemoryDriverModule)
         .then(() => {
           nodeJsMemoryDriverName = nodeJsMemoryDriverModule._driver; 
           if (!nodeJsMemoryDriverName) {
             const errMsg = 'localforage-driver-memory did not provide a _driver name.';
-            console.error('[LocalStorageAdapter] Node.js: ', errMsg);
             throw new Error(errMsg);
           }
-          // No need to call setDriver globally if we pass driver name to createInstance
-          console.log(`[LocalStorageAdapter] Node.js: Defined memory driver. Name: '${nodeJsMemoryDriverName}'.`);
         })
         .catch(err => {
-          console.error('[LocalStorageAdapter] Node.js: Failed to define localforage-driver-memory:', err);
           localforageDriverPromise = Promise.reject(err); 
         });
     } else {
       localforageDriverPromise = Promise.resolve(); 
     }
   } catch (e) {
-    console.warn('[LocalStorageAdapter] Node.js: localforage-driver-memory require failed.', e.message);
     localforageDriverPromise = Promise.resolve(); 
   }
 } else {
@@ -99,7 +93,6 @@ class LocalStorageAdapter {
       description: 'Metadata for AsterixDB connector',
       driver: driverConfig
     });
-    this._log('debug', 'localforage store instances created/initialized.');
   }
 
   /**

@@ -25,7 +25,7 @@ async function executeQuery4() {
       const result = await connector.executeQuery(mainQueryString);
       // console.log('Query 4 (Theta Join) Result:');
       // console.dir(result, { depth: null, colors: true });
-      console.log('Query 4 (Theta Join) executed. Result length:', result.length);
+      console.log('Query 4 (Theta Join) executed. Result length:', result && result.results ? result.results.length : 'N/A (no results array)');
     } catch (error) {
       console.error('Query 4 Error:', error.message);
       if (error.stack) console.error(error.stack);

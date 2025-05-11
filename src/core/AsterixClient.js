@@ -1,6 +1,6 @@
 const Connector = require('./Connector');
-const OfflineEnabledConnector = require('./OfflineEnabledConnector');
-const AsterixDatabase = require('./AsterixDatabase');
+const OfflineEnabledConnector = require('../offline/OfflineEnabledConnector');
+const AsterixDatabase = require('../mongo/AsterixDatabase');
 
 /**
  * AsterixClient provides a MongoDB-like interface for connecting to AsterixDB.
@@ -65,14 +65,10 @@ class AsterixClient {
       if (clientProvidedOptions.enableOfflineQueue !== undefined) this.options.enableOfflineQueue = clientProvidedOptions.enableOfflineQueue;
     }
     
-    console.log("[AsterixClient.constructor] Final resolved URL:", this.url);
-    console.log("[AsterixClient.constructor] Final combined options before autoConnect:", JSON.stringify(this.options, null, 2));
-
     this._connector = null;
     this._databases = {};
 
     if (this.options.autoConnect) {
-      console.log("[AsterixClient.constructor] Auto-connecting...");
       this.connect();
     }
   }
@@ -87,11 +83,7 @@ class AsterixClient {
       return this;
     }
     
-    console.log("[AsterixClient.connect] Attempting to connect. Effective options:", JSON.stringify(this.options, null, 2));
-    console.log("[AsterixClient.connect] this.options.offlineEnabled is:", this.options.offlineEnabled, "(type:", typeof this.options.offlineEnabled, ")");
-
     if (this.options.offlineEnabled === true) {
-      console.log("[AsterixClient.connect] Offline mode IS enabled. Creating OfflineEnabledConnector.");
       this._connector = new OfflineEnabledConnector({
         astxUrl: this.url,
         cacheTTL: this.options.cacheTTL,
@@ -99,7 +91,6 @@ class AsterixClient {
         enableOfflineQueue: this.options.enableOfflineQueue
       });
     } else {
-      console.log("[AsterixClient.connect] Offline mode IS NOT enabled. Creating standard Connector.");
       this._connector = new Connector({ astxUrl: this.url });
     }
     return this;
@@ -113,7 +104,6 @@ class AsterixClient {
    */
   db(name) {
     if (!this._connector) {
-      console.log("[AsterixClient.db] Connector not found, attempting to connect.");
       this.connect(); 
       if (!this._connector) {
         throw new Error("Connection failed. Cannot get database reference.");
@@ -156,7 +146,6 @@ class AsterixClient {
     }
     this._connector = null;
     this._databases = {};
-    console.log("[AsterixClient.close] Client closed.");
   }
 }
 

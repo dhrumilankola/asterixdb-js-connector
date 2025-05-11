@@ -1,5 +1,5 @@
-const QueryBuilder = require('./QueryBuilder');
-const QueryTranslator = require('./QueryTranslator');
+const QueryBuilder = require('../core/QueryBuilder');
+const QueryTranslator = require('../core/QueryTranslator');
 
 /**
  * AsterixCollection provides a MongoDB-like interface for interacting with AsterixDB datasets.
@@ -120,11 +120,11 @@ class AsterixCollection {
       const docToInsert = { ...doc };
       if (!docToInsert._id) {
         docToInsert._id = this._generateId();
-        console.log(`[AsterixCollection.insertOne] Generated _id '${docToInsert._id}' for doc with screenName: '${docToInsert.screenName || 'N/A'}'`);
+        // console.log(`[AsterixCollection.insertOne] Generated _id '${docToInsert._id}' for doc with screenName: '${docToInsert.screenName || 'N/A'}'`);
       }
       
       // Build the SQL++ INSERT query
-      console.log(`[AsterixCollection.insertOne] About to build INSERT query for doc with screenName: '${docToInsert.screenName || 'N/A'}'`);
+      // console.log(`[AsterixCollection.insertOne] About to build INSERT query for doc with screenName: '${docToInsert.screenName || 'N/A'}'`);
       const builder = new QueryBuilder()
         .use(this.database.name)
         .insertInto(this.name)
@@ -133,17 +133,17 @@ class AsterixCollection {
       // The builder.build() method itself contains a console.log for the generated query.
       const sqlppQuery = await builder.build();
       
-      console.log(`[AsterixCollection.insertOne] About to execute INSERT query for doc with screenName: '${docToInsert.screenName || 'N/A'}'`);
+      // console.log(`[AsterixCollection.insertOne] About to execute INSERT query for doc with screenName: '${docToInsert.screenName || 'N/A'}'`);
       await this._connector.executeQuery(sqlppQuery);
       
-      console.log(`[AsterixCollection.insertOne] Successfully executed INSERT for doc with screenName: '${docToInsert.screenName || 'N/A'}'`);
+      // console.log(`[AsterixCollection.insertOne] Successfully executed INSERT for doc with screenName: '${docToInsert.screenName || 'N/A'}'`);
       return docToInsert;
     } catch (error) {
-      console.error(`[AsterixCollection.insertOne] ERROR for doc screenName '${doc.screenName || 'N/A'}: ${error.message}`);
-      console.error(`[AsterixCollection.insertOne] Error stack: ${error.stack}`);
-      if (error.response && error.response.data) {
-        console.error(`[AsterixCollection.insertOne] Axios Error Response Data: ${JSON.stringify(error.response.data, null, 2)}`);
-      }
+      // console.error(`[AsterixCollection.insertOne] ERROR for doc screenName '${doc.screenName || 'N/A'}: ${error.message}`);
+      // console.error(`[AsterixCollection.insertOne] Error stack: ${error.stack}`);
+      // if (error.response && error.response.data) {
+      //   console.error(`[AsterixCollection.insertOne] Axios Error Response Data: ${JSON.stringify(error.response.data, null, 2)}`);
+      // }
       throw new Error(`InsertOne operation failed for ${doc.screenName || 'document'}: ${error.message}`);
     }
   }

@@ -29,7 +29,8 @@ async function executeQuery11() {
     
     try {
       const result = await connector.executeQuery(mainQueryString);
-      console.log('Query 11 (Left Outer Fuzzy Join) executed. Result length:', result.length);
+      console.log('Query 11 (Left Outer Fuzzy Join) executed Result:');
+      console.dir(result, { depth: null, colors: true });
     } catch (error) {
       console.error('Query 11 Error:', error.message);
       if (error.stack) console.error(error.stack);

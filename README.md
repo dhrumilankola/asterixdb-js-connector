@@ -175,9 +175,9 @@ _Note: The `forceSynchronization()` method mentioned in previous versions was pa
 
 ## Examples
 
-The `src/examples/` directory contains scripts demonstrating various features:
+The `examples/` directory contains scripts demonstrating various features:
 - `MongoLikeUsage.js`: Basic DML operations using the MongoDB-like API.
-- `PowerhouseExample.js`: A comprehensive script showcasing DDL (commented out by default), DML, caching, and offline queueing simulation.
+- `DemoUsage.js`: A comprehensive script showcasing DDL (commented out by default), DML, caching, and offline queueing simulation.
 
 ### Running the Examples
 
@@ -185,7 +185,7 @@ Navigate to the `src/examples/` directory and run the scripts using Node.js:
 ```bash
 cd src/examples
 node MongoLikeUsage.js
-node PowerhouseExample.js
+node DemoUsage.js
 ```
 Ensure your AsterixDB instance is running and accessible at `http://localhost:19002` (or update the URL in the example scripts).
 

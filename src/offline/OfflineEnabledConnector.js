@@ -1,5 +1,5 @@
 // src/core/OfflineEnabledConnector.js
-const Connector = require('./Connector');
+const Connector = require('../core/Connector');
 const SyncManager = require('./SyncManager');
 const crypto = require('crypto');
 
@@ -120,7 +120,7 @@ class OfflineEnabledConnector {
           return result;
         } else {
           // We're offline, try to serve from cache
-          console.debug('Offline mode: attempting to serve from cache');
+          // console.debug('Offline mode: attempting to serve from cache');
           const cachedData = await this.syncManager.localStorage.getCache(cacheKey);
           
           if (cachedData) {
@@ -129,10 +129,10 @@ class OfflineEnabledConnector {
             
             // Check if cache is still valid
             if (metadata.timestamp + (metadata.ttl || combinedOptions.cacheTTL) > now) {
-              console.debug('Serving from cache for query:', query);
+              // console.debug('Serving from cache for query:', query);
               return data;
             } else {
-              console.debug('Cache expired for query:', query);
+              // console.debug('Cache expired for query:', query);
             }
           }
           
@@ -148,7 +148,7 @@ class OfflineEnabledConnector {
           const cachedData = await this.syncManager.localStorage.getCache(cacheKey);
           
           if (cachedData) {
-            console.debug('Offline fallback: serving expired cache for query:', query);
+            // console.debug('Offline fallback: serving expired cache for query:', query);
             return {
               ...cachedData.data,
               _fromCache: true,

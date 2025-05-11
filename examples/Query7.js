@@ -19,8 +19,7 @@ async function executeQuery7() {
     try {
       const result = await connector.executeQuery(query);
       // console.log('Query 7 (Universal Quantification) Result:');
-      // console.dir(result, { depth: null, colors: true });
-      console.log('Query 7 (Universal Quantification) executed. Result length:', result.length);
+      console.dir(result, { depth: null, colors: true });
     } catch (error) {
       console.error('Query 7 Error:', error.message);
       if (error.stack) console.error(error.stack);
