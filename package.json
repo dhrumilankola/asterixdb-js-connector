@@ -20,7 +20,7 @@
     "nosql",
     "offline"
   ],
-  "author": "",
+  "author": "Dhrumil Ankola <dhrumilankola@gmail.com> (https://github.com/dhrumilankola)",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.7.9",
@@ -41,9 +41,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/username/asterixdb-js-connector.git"
+    "url": "https://github.com/dhrumilankola/asterixdb-js-connector"
   },
   "engines": {
     "node": ">=14.0.0"
-  }
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE"
+  ]
 }

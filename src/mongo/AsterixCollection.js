@@ -36,11 +36,19 @@ class AsterixCollection {
       const sqlppQuery = await this._buildFindQuery(query, options);
       
       // Execute the query
-      const result = await this._connector.executeQuery(sqlppQuery);
+      const response = await this._connector.executeQuery(sqlppQuery);
       
       // Extract and return the results
-      if (result && result.results) {
-        return result.results;
+      if (response && response.results) {
+        // Check if results are nested (e.g., [{ "CollectionName": {...} }])
+        // This happens when SELECT * is used and no alias is given to the dataset in FROM.
+        return response.results.map(item => {
+          const keys = Object.keys(item);
+          if (keys.length === 1 && keys[0] === this.name) {
+            return item[this.name];
+          }
+          return item;
+        });
       }
       
       return [];
@@ -407,17 +415,16 @@ class AsterixCollection {
       // Translate the MongoDB-style filter to SQL++ WHERE clause
       const whereClause = this._queryTranslator.toSQLPP(filter);
       
-      // Build and execute the SQL++ DELETE query
-      // LIMIT 1 is not standard SQL++ for DELETE and will cause an error.
-      // If the whereClause correctly targets a unique document (e.g., by primary key),
-      // it will inherently delete only one.
       const sqlppQuery = `
         USE ${this.database.name};
         DELETE FROM ${this.name}
         WHERE ${whereClause};
       `;
       
+      console.log(`[AsterixCollection.deleteOne] Generated SQL++ for delete: ${sqlppQuery.replace(/\n\s*/g, ' ').trim()}`); // Log the query
+
       const result = await this._connector.executeQuery(sqlppQuery);
+      console.log(`[AsterixCollection.deleteOne] Raw result from AsterixDB:`, JSON.stringify(result, null, 2)); // Log the raw result
       
       // Extract the delete count from the result
       let deletedCount = 0;

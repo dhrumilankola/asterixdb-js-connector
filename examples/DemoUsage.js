@@ -72,8 +72,8 @@ async function powerhouseDemo() {
     };
     // console.log('Attempting to insert ChirpUser1:', chirpUser1);
     try {
-      await chirpUsers.insertOne(chirpUser1);
-      console.log('Successfully inserted ChirpUser1:', chirpUser1.screenName);
+      const insertResult1 = await chirpUsers.insertOne(chirpUser1);
+      console.log('Successfully inserted ChirpUser1. Result:', JSON.stringify(insertResult1, null, 2));
     } catch (insertError) {
       console.error('[PowerhouseExample] ERROR during chirpUsers.insertOne(chirpUser1):', insertError.message);
       // console.error('[PowerhouseExample] InsertError name:', insertError.name);
@@ -92,8 +92,8 @@ async function powerhouseDemo() {
     };
     // console.log('Attempting to insert ChirpUser2:', chirpUser2);
     try {
-      await chirpUsers.insertOne(chirpUser2);
-      console.log('Successfully inserted ChirpUser2:', chirpUser2.screenName);
+      const insertResult2 = await chirpUsers.insertOne(chirpUser2);
+      console.log('Successfully inserted ChirpUser2. Result:', JSON.stringify(insertResult2, null, 2));
     } catch (insertError2) {
       console.error('[PowerhouseExample] ERROR during chirpUsers.insertOne(chirpUser2):', insertError2.message);
       // console.error('[PowerhouseExample] InsertError2 name:', insertError2.name);
@@ -105,10 +105,13 @@ async function powerhouseDemo() {
     logSection('Finding a ChirpUser');
     let foundUser = await chirpUsers.findOne({ screenName: chirpUser1.screenName });
     console.log('Found ChirpUser1 (after insert):', foundUser ? foundUser.screenName : 'Not found');
+    if (foundUser) {
+      console.log('[DemoUsage.js] Full foundUser object for chirpUser1:', JSON.stringify(foundUser, null, 2));
+    }
     
     logSection('Finding multiple ChirpUsers with filter');
     const englishChirpUsers = await chirpUsers.find({ lang: 'en', name: {$regex: '^Powerhouse User'} });
-    console.log(`English Powerhouse ChirpUsers found: ${englishChirpUsers.length}`);
+    console.log('English Powerhouse ChirpUsers found:', JSON.stringify(englishChirpUsers, null, 2));
 
     logSection('Counting ChirpUsers');
     const count = await chirpUsers.countDocuments({ name: {$regex: '^Powerhouse User'} });
@@ -155,7 +158,7 @@ async function powerhouseDemo() {
       console.log(`Manually queued ChirpUser insert operation: ${operationId} for ${offlineChirpUser.screenName}`);
       
       const pendingOps = await localStorageFeature.getPendingOperations();
-      console.log('Pending operations in queue after manual add:', pendingOps.length);
+      console.log('Pending operations in queue after manual add:', JSON.stringify(pendingOps, null, 2));
 
       // console.log('NOTE: True offline queue processing by SyncManager depends on it detecting network status changes and being active.');
       // console.log('This part of the demo shows direct interaction with the queueing mechanism of the storage adapter.');
@@ -177,16 +180,25 @@ async function powerhouseDemo() {
     // --- 5. CLEANUP (Optional: Deleting a user) ---
     logSection('Deleting ChirpUser2');
     if (chirpUser2 && chirpUser2.screenName) {
+      const userToDelete2 = await chirpUsers.findOne({ screenName: chirpUser2.screenName });
+      if (userToDelete2) {
+        console.log('[DemoUsage.js] chirpUser2 object just before delete:', JSON.stringify(userToDelete2, null, 2));
+      }
       const deleteResult = await chirpUsers.deleteOne({ screenName: chirpUser2.screenName });
-      console.log(`Attempted to delete ChirpUser2 (${chirpUser2.screenName}): ${deleteResult.deletedCount > 0 ? 'Success' : 'Failed/Not Found'}`);
+      console.log(`Attempted to delete ChirpUser2 (${chirpUser2.screenName}). Result:`, JSON.stringify(deleteResult, null, 2));
       // const deletedVerify = await chirpUsers.findOne({ screenName: chirpUser2.screenName });
       // console.log(`Verification for ChirpUser2 (should be null if deleted): ${deletedVerify ? JSON.stringify(deletedVerify) : 'Not Found'}`);
     }
 
     logSection('Deleting ChirpUser1');
     if (chirpUser1 && chirpUser1.screenName) {
+      // It might be good to re-fetch chirpUser1 before delete, in case foundUser above was from cache and DB state changed
+      const userToDelete1 = await chirpUsers.findOne({ screenName: chirpUser1.screenName });
+      if (userToDelete1) {
+        console.log('[DemoUsage.js] chirpUser1 object just before delete:', JSON.stringify(userToDelete1, null, 2));
+      }
       const deleteResult1 = await chirpUsers.deleteOne({ screenName: chirpUser1.screenName });
-      console.log(`Attempted to delete ChirpUser1 (${chirpUser1.screenName}): ${deleteResult1.deletedCount > 0 ? 'Success' : 'Failed/Not Found'}`);
+      console.log(`Attempted to delete ChirpUser1 (${chirpUser1.screenName}). Result:`, JSON.stringify(deleteResult1, null, 2));
     }
 
     // --- 6. CACHE STATS --- (Re-enabled)
